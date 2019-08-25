@@ -9,7 +9,7 @@ tenga stock no permita realizar movimientos con él.
 - Spring boot
 - Spring Data
 - String Actuator
-- [Thymeleaf](http://www.thymeleaf.org) + webjar + layout ->  
+- [Thymeleaf](http://www.thymeleaf.org) + webjar + layout
 - Boostrap - UI template
 - H2 - db in memory
 - JUnit5
@@ -19,6 +19,10 @@ tenga stock no permita realizar movimientos con él.
 Ejecutar la aplicación. Necesitas compilar el proyecto: `mvn clean package`
 ```
 java -jar Kardex-1.0.jar
+```
+o mediante maven:
+```
+mvn spring-boot:run
 ```
 Ejecutar los test:
 ```
