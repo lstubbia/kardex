@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+	<head th:replace="fragments/head :: head">
+	</head>
+	<body>
+	    <div id="wrapper">
+	        <div th:replace="fragments/userbar :: #bar"></div>
+	        <div id="page-wrapper" style="padding-top: 30px;">
+				<div class="row">
+    				<div class="col-md-12">
+    					<div th:if="${!#strings.isEmpty(errorException)}" class="form-group has-error">
+				            <div class="controls">
+					        	<label class="control-label" th:text="${errorException}">[Errors]</label>
+				            </div>
+                		</div>
+        				<div class="panel panel-default">
+            				<div class="panel-heading"><strong class="page-header">Productos</strong></div>
+            				<div class="panel-body">
+            					<form role="form" th:object="${paginator}" th:action="@{${#httpServletRequest.servletPath}}" method="POST" class="form-group" id="search-product-form">
+            						<div class="row">
+			                			<div class="col-sm-4">
+							        		<fieldset>
+							        			<div class="form-group input-group">
+							                    	<input type="text" class="form-control" th:field="*{query}" autofocus="true"/>
+							                    	<span class="input-group-btn">
+							                        	<button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
+							                    	</span>
+							                	</div>
+							                	<div class="form-group has-error" th:if="${#fields.hasErrors('query')}">
+													<label class="control-label" th:errors="*{query}">[Errors]</label>
+												</div>
+												<input type="hidden" th:field="*{selectedRowsToShow}"/>
+												<input type="hidden" th:field="*{totalRow}"/>
+												<input type="hidden" th:field="*{selectedPage}"/>
+							                </fieldset>
+							        	</div>
+							        	<div class="col-sm-2">
+							        		<a th:href="@{/product/new}" class="btn btn-info" ><i class="fa fa-plus-square"></i> Nuevo Producto</a>
+							        	</div>
+					        		</div>
+                    				<div class="table-responsive">
+                        				<table class="table table-striped table-bordered table-hover">
+                            				<thead>
+				                                <tr class="info">
+				                                	<th>Código</th>
+				                                	<th>Nombre</th>
+				                                	<th>Importe</th>
+				                                	<th>Stock</th>
+				                                	<th>Opciones</th>
+				                                </tr>
+				                            </thead>
+				                            <tbody>
+				                            	<tr th:each="sg : ${selections}">
+				                                	<td>
+				                                		<a th:href="@{|/product/${sg.product.id}|}" th:text="|${sg.product.code}|">Code</a>
+								                    </td>
+								                    <td th:text="${sg.product.name}">Name</td>
+								                    <td th:text="${sg.product.amount}">Amount</td>
+								                    <td th:text="${sg.quantity}">Stock</td>
+								                    <td class="center">
+								               	     	<a th:href="@{|/product/${sg.product.id}/movement|}" class="btn btn-info btn-xs fa fa-credit-card"></a>
+								               	     	<a th:href="@{|/stock/${sg.id}|}" class="btn btn-danger btn-xs reset-stock">Modificar Stock</a>
+								               	     	<a th:href="@{|/stock/${sg.id}|}" class="btn btn-success btn-xs sell-stock">Vender</a>
+								               	     	<a th:href="@{|/stock/${sg.id}|}" class="btn btn-warning btn-xs in-stock">Ingresar</a>
+				                                	</td>
+				                                </tr>
+				                            </tbody>
+	                        			</table>
+                    				</div>
+                    				<div class="row">
+				        			<div class="col-md-10" th:if="${paginator.pages != null}">
+				        				<div class="dataTables_paginate paging_simple_numbers">
+				        					<ul class="pagination">
+				        						<li class="paginate_button previous disabled">
+				        							<a href="#">Paginas:</a>
+				        						</li>
+				        						<li class="paginate_button" th:each="page : ${paginator.pages}" th:classappend="${page == paginator.selectedPage} ? active" >
+				        							<a th:attr="page-data=${page}" th:href="@{/product(page=${page})}"><span th:text="|${page}|" /></a>
+				        						</li>
+				        					</ul>
+				        				</div>
+				        			</div>
+                				</form>
+            				</div>
+        				</div>
+    				</div>
+				</div>				
+	        </div>
+	        <div th:replace="fragments/footer :: #footer"></div>
+	    </div>
+	    
+	    <div class="stockForm">
+	    	<form th:action="@{/registerStock}" method="POST">
+				<div class="modal fade" id="stockModal" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
+					<div class="modal-dialog">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h4 class="modal-title">Actualizar Stock</h4>
+							</div>
+							<div class="modal-body">
+								<div class="form-group" >
+									<label for="product-name">Producto</label>
+									<input disabled="true" type="text" class="form-control" id="product-name" name="product-name"/>
+									<input type="hidden" id="id" name="id"/>
+									<input type="hidden" id="type" name="type"/>
+								</div>
+								<div class="form-group" >
+									<label for="quantity">Cantidad Actual</label>
+									<input disabled="true" type="text" class="form-control" id="quantity" name="quantity"/>
+								</div>
+								<div class="form-group" >
+									<label for="newQuantity">Cantidad Nueva</label>
+									<input type="text" class="form-control" id="newQuantity" name="newQuantity"/>
+		                        </div>
+		                    </div>
+		                    <div class="modal-footer">
+		                        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+		                        <input type="submit" class="btn btn-primary" value="Guardar"/>
+		                    </div>
+		                </div>
+		            </div>
+				</div>
+			</form>
+		</div>
+		<script type="text/javascript">
+			$('.reset-stock').click(function(event) {
+				event.preventDefault();
+				var href = $(this).attr('href');
+				$.get(href, function(stock, status){
+					$('#product-name').val(stock.product.code + ' - ' + stock.product.name);
+					$('#id').val(stock.id);
+					$('#quantity').val(stock.quantity);
+					$('#newQuantity').val(stock.newQuantity);
+					$('#type').val('RESET');
+				});
+				$('.stockForm #stockModal').modal();
+			});
+			$('.sell-stock').click(function(event) {
+				event.preventDefault();
+				var href = $(this).attr('href');
+				$.get(href, function(stock, status){
+					$('#product-name').val(stock.product.code + ' - ' + stock.product.name);
+					$('#id').val(stock.id);
+					$('#quantity').val(stock.quantity);
+					$('#newQuantity').val(stock.newQuantity);
+					$('#type').val('OUT');
+				});
+				$('.stockForm #stockModal').modal();
+			});
+			$('.in-stock').click(function(event) {
+				event.preventDefault();
+				var href = $(this).attr('href');
+				$.get(href, function(stock, status){
+					$('#product-name').val(stock.product.code + ' - ' + stock.product.name);
+					$('#id').val(stock.id);
+					$('#quantity').val(stock.quantity);
+					$('#newQuantity').val(stock.newQuantity);
+					$('#type').val('IN');
+				});
+				$('.stockForm #stockModal').modal();
+			});
+		</script>
+	</body>
+</html>
