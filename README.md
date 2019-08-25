@@ -45,3 +45,11 @@ La aplicación utiliza H2 `h2:~/kerdexdb;`.
 - Health: http://localhost:8080/actuator/health
 ```
 [Actuator: Resto de endpoints](https://docs.spring.io/spring-boot/docs/current/reference/html/production-ready-endpoints.html)
+
+## UI ##
+* Home/Product:
+![Home/Product](home.png)
+* Actualizacion de Stock (RESET/VENTA/INGRESO):
+![Stock](stock.png)
+* Creación/Actualización de Productos:
+![Product](product.png)
