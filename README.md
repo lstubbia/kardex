@@ -29,6 +29,7 @@ Ejecutar los test:
 mvn test
 ```
 La aplicación utiliza H2 `h2:~/kerdexdb;`.
+Endpoint a la base: `http://localhost:8080/h2-console`
 
 ## Uso ##
 
